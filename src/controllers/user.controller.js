@@ -50,7 +50,7 @@ const sendMail = async (req, res) => {
     }
 };
 
-const getUserInbox = (req, res) => {
+const getUserInbox = async (req, res) => {
     try {
         const { token } = req.query;
         const { email } = await tokenobj.VarifyToken(token);
@@ -64,7 +64,7 @@ const getUserInbox = (req, res) => {
     }
 };
 
-const getUserOutbox = (req, res) => {
+const getUserOutbox = async (req, res) => {
     try {
         const { token } = req.query;
         const { email } = await tokenobj.VarifyToken(token);
@@ -93,16 +93,6 @@ const searchMail = async (req, res) => {
     } catch(err) {
         res.status(400).json({error : true, ...err});
     }
-    const { keyWord, searchSpace, token } = req.body;
-    const { email } = await tokenobj.VarifyToken(token);
-    if (!email) {
-        return res.status(400).json({error : true, msg : "please login again"});
-    }
-    let result = await Email.find({$and : [{email : email}, {searchSpace : searchSpace}]});
-    result = await result.find({Subject : {
-        $regex : keyWord
-    }});
-    res.status(200).json({result : [...result]});
 };
 
 const blockUser = (req, res) => {
